@@ -1,7 +1,7 @@
 import csv
 import pprint
 from collections import defaultdict
-
+import pdb; 
 csv_files = ['./csv/all_items_test.csv', './csv/all_items_tags_test.csv', './csv/all_items_price_test.csv']
 
 
@@ -26,15 +26,22 @@ def join_csv_files(csv_files):
                 system_sku = row['SystemSKU']
 
                 # Add row data to the dictionary using System ID as key
+            
                 data_dict[system_sku].update(row)
+               
 
     return data_dict
 
 
-               
+
+        
 
 # This var stores all the files of price and tags all in on dict
 joinedFiles = join_csv_files(csv_files)
+
+pprint.pprint("JOINED")    
+
+pprint.pprint(joinedFiles)    
 
 # This stores only files that have the add tag included
 filtered_files = {}
@@ -55,10 +62,6 @@ for key, val in filtered_files.items():
         adjusted_price[key]["MSRP (2)"] = 0
 
 
-pprint.pprint("JOINED")    
 
-pprint.pprint(joinedFiles["210000002447"])    
 
-pprint.pprint("ADJUSTED")    
-
-pprint.pprint(adjusted_price)    
+  
