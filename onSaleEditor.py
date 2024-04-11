@@ -2,7 +2,12 @@ import csv
 import pprint
 from collections import defaultdict
 import pdb; 
-csv_files = ['./csv/all_items_test.csv', './csv/all_items_tags_test.csv', './csv/all_items_price_test.csv']
+csv_files = ['./test_csv/all_items_test.csv', './test_csv/all_items_tags_test.csv', './test_csv/all_items_price_test.csv']
+
+MSRP = "MSRP"
+MSRP2 = "MSRP (2)"
+DEFAULT = "Default (1)"
+SALE = "Sale (3)"
 
 
 data_dict = defaultdict(dict)
@@ -17,7 +22,7 @@ def join_csv_files(csv_files):
 
             # Iterate through each row in the CSV file
             for row in csv_reader:
-
+                print(row)
                 if 'System ID' in row:
                     system_sku = row.pop('System ID')
                     row["SystemSKU"] = system_sku
@@ -37,31 +42,37 @@ def join_csv_files(csv_files):
         
 
 # This var stores all the files of price and tags all in on dict
-joinedFiles = join_csv_files(csv_files)
+joined_files = join_csv_files(csv_files)
 
-pprint.pprint("JOINED")    
 
-pprint.pprint(joinedFiles)    
+
+#######CLEAN DATA#################
+
+# if sale and msrp are empty, store the default value in SALE
+for key, val in joined_files.items():
+    if val[SALE] == '0' and val[MSRP2] == '0':
+        val[SALE] = val[DEFAULT]
+
+
+##################################
+
+pprint.pprint("After cleaning:")
+pprint.pprint(joined_files)
 
 # This stores only files that have the add tag included
-filtered_files = {}
+online_files = {}
 
-for key, val in joinedFiles.items():
+for key, val in joined_files.items():
     if  "add" in val["Tags"]:
-        filtered_files[key] = val
+        online_files[key] = val
 
-# pprint.pprint(filtered_files)
+# pprint.pprint(online_files)
 
 # This stores files where price is adjusted
-adjusted_price = {}
+online_adjusted_price = {}
 
-for key, val in filtered_files.items():
+for key, val in online_files.items():
     if  val["Sale (3)"] == val["Default (1)"]:
-        adjusted_price[key] = val
-        adjusted_price[key]["MSRP"] = 0
-        adjusted_price[key]["MSRP (2)"] = 0
-
-
-
-
-  
+        online_adjusted_price[key] = val
+        online_adjusted_price[key]["MSRP"] = 0
+        online_adjusted_price[key]["MSRP (2)"] = 0
